@@ -1,0 +1,20 @@
+{% extends '_base.html' %}
+{% block title %}Zakázky{% endblock %}
+{% block content %}
+<h1><i class="fa fa-helmet-safety"></i> Přehled zakázek</h1>
+<a class="btn btn-primary mb-3" href="{{ url_for('nova_zakazka') }}">Nová zakázka</a>
+<table class="table table-striped">
+  <tr>
+    <th>Číslo</th><th>Typ</th><th>Datum zadání</th><th>Stav</th><th>Detail</th>
+  </tr>
+  {% for z in zakazky %}
+  <tr>
+    <td>{{ z.cislo_zakazky }}</td>
+    <td>{{ z.typ_zakazky }}</td>
+    <td>{{ z.datum_zadani }}</td>
+    <td>{{ z.stav }}</td>
+    <td><a href="{{ url_for('zakazka_detail', zakazka_id=z.id) }}">Otevřít</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

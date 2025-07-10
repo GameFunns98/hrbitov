@@ -1,0 +1,22 @@
+{% extends '_base.html' %}
+{% block title %}Seznam zesnulých{% endblock %}
+{% block content %}
+<h1>Zesnulí</h1>
+<a href="{{ url_for('pridat_zesnuly') }}" class="btn btn-success mb-3">Přidat zesnulého</a>
+<table class="table table-striped">
+  <tr><th>ID</th><th>Jméno</th><th>Hrob</th><th>Akce</th></tr>
+  {% for z in zesnuli %}
+  <tr>
+    <td>{{ z.id }}</td>
+    <td>{{ z.jmeno }}</td>
+    <td>{{ z.hrob.oznaceni }}</td>
+    <td>
+      <a class="btn btn-sm btn-secondary" href="{{ url_for('edit_zesnuly', zesnuly_id=z.id) }}">Upravit</a>
+      <form method="post" action="{{ url_for('delete_zesnuly', zesnuly_id=z.id) }}" class="d-inline">
+        <button class="btn btn-sm btn-danger" onclick="return confirm('Smazat záznam?')">Smazat</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
