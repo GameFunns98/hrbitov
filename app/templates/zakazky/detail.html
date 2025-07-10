@@ -1,0 +1,44 @@
+{% extends '_base.html' %}
+{% block title %}Zakázka {{ zakazka.cislo_zakazky }}{% endblock %}
+{% block content %}
+<h1>Zakázka {{ zakazka.cislo_zakazky }}</h1>
+<p><strong>Typ:</strong> {{ zakazka.typ_zakazky }}</p>
+<p><strong>Popis:</strong> {{ zakazka.popis }}</p>
+<p><strong>Datum zadání:</strong> {{ zakazka.datum_zadani }}
+   {% if zakazka.datum_dokonceni %}<br><strong>Dokončení:</strong> {{ zakazka.datum_dokonceni }}{% endif %}
+</p>
+<p><strong>Stav:</strong> {{ zakazka.stav }}</p>
+<h3>Smlouvy</h3>
+<ul>
+  {% for s in zakazka.smlouvy %}<li>{{ s.id }}</li>{% else %}<li>Žádné</li>{% endfor %}
+</ul>
+<h3>Hroby</h3>
+<ul>
+  {% for h in zakazka.hroby %}<li>{{ h.oznaceni }}</li>{% else %}<li>Žádné</li>{% endfor %}
+</ul>
+<h3>Komentáře</h3>
+<ul>
+  {% for k in zakazka.komentare %}<li>{{ k.datum }} - {{ k.text }}</li>{% endfor %}
+</ul>
+<form method="post">
+  {{ koment_form.hidden_tag() }}
+  <div class="mb-3">{{ koment_form.text.label }} {{ koment_form.text(class_='form-control') }}</div>
+  {{ koment_form.submit(class_='btn btn-secondary') }}
+</form>
+<h3>Výkazy</h3>
+<table class="table">
+  <tr><th>Položka</th><th>Náklady</th><th>Jednotka</th><th>Počet</th><th>Cena celkem</th></tr>
+  {% for v in zakazka.vykazy %}
+  <tr><td>{{ v.polozka }}</td><td>{{ v.naklady }}</td><td>{{ v.jednotka }}</td><td>{{ v.pocet }}</td><td>{{ v.cena_celkem }}</td></tr>
+  {% endfor %}
+</table>
+<form method="post">
+  {{ vykaz_form.hidden_tag() }}
+  <div class="mb-3">{{ vykaz_form.polozka.label }} {{ vykaz_form.polozka(class_='form-control') }}</div>
+  <div class="mb-3">{{ vykaz_form.naklady.label }} {{ vykaz_form.naklady(class_='form-control') }}</div>
+  <div class="mb-3">{{ vykaz_form.jednotka.label }} {{ vykaz_form.jednotka(class_='form-control') }}</div>
+  <div class="mb-3">{{ vykaz_form.pocet.label }} {{ vykaz_form.pocet(class_='form-control') }}</div>
+  <div class="mb-3">{{ vykaz_form.cena_celkem.label }} {{ vykaz_form.cena_celkem(class_='form-control') }}</div>
+  {{ vykaz_form.submit(class_='btn btn-secondary') }}
+</form>
+{% endblock %}

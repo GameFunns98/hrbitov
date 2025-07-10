@@ -1,8 +1,27 @@
 import io
 from flask import render_template, redirect, url_for, flash, send_file
 from . import app, db
-from .models import Hrbitov, Hrob, Zesnuly, Najemce, Smlouva
-from .forms import HrbitovForm, HrobForm, ZesnulyForm, NajemceForm, SmlouvaForm
+from .models import (
+    Hrbitov,
+    Hrob,
+    Zesnuly,
+    Najemce,
+    Smlouva,
+    Zakazka,
+    Komentar,
+    VykazZakazky,
+    generate_cislo_zakazky,
+)
+from .forms import (
+    HrbitovForm,
+    HrobForm,
+    ZesnulyForm,
+    NajemceForm,
+    SmlouvaForm,
+    ZakazkaForm,
+    KomentarForm,
+    VykazForm,
+)
 from .utils import generate_qr, generate_pdf
 
 @app.route('/')
@@ -111,3 +130,72 @@ def export_zesnuli():
     output.write(si.getvalue().encode('utf-8'))
     output.seek(0)
     return send_file(output, mimetype='text/csv', download_name='zesnuli.csv', as_attachment=True)
+
+
+@app.route('/zakazky')
+def zakazky():
+    zakazky = Zakazka.query.all()
+    return render_template('zakazky/index.html', zakazky=zakazky)
+
+
+@app.route('/zakazky/novy', methods=['GET', 'POST'])
+def nova_zakazka():
+    form = ZakazkaForm()
+    form.smlouvy.choices = [(s.id, f"{s.id} - {s.hrob.oznaceni}") for s in Smlouva.query.all()]
+    form.hroby.choices = [(h.id, h.oznaceni) for h in Hrob.query.all()]
+    if form.validate_on_submit():
+        zak = Zakazka(
+            cislo_zakazky=generate_cislo_zakazky(),
+            typ_zakazky=form.typ_zakazky.data,
+            popis=form.popis.data,
+            datum_zadani=form.datum_zadani.data,
+            datum_dokonceni=form.datum_dokonceni.data,
+        )
+        for sid in form.smlouvy.data:
+            zak.smlouvy.append(Smlouva.query.get(sid))
+        for hid in form.hroby.data:
+            zak.hroby.append(Hrob.query.get(hid))
+        db.session.add(zak)
+        db.session.commit()
+        flash('Zakázka vytvořena')
+        return redirect(url_for('zakazky'))
+    return render_template('zakazky/novazakazka.html', form=form)
+
+
+@app.route('/zakazka/<int:zakazka_id>', methods=['GET', 'POST'])
+def zakazka_detail(zakazka_id):
+    zak = Zakazka.query.get_or_404(zakazka_id)
+    koment_form = KomentarForm(prefix='kom')
+    vykaz_form = VykazForm(prefix='vyk')
+    if koment_form.validate_on_submit() and koment_form.submit.data:
+        kom = Komentar(text=koment_form.text.data, zakazka=zak)
+        db.session.add(kom)
+        db.session.commit()
+        return redirect(url_for('zakazka_detail', zakazka_id=zak.id))
+    if vykaz_form.validate_on_submit() and vykaz_form.submit.data:
+        vyk = VykazZakazky(
+            polozka=vykaz_form.polozka.data,
+            naklady=vykaz_form.naklady.data,
+            jednotka=vykaz_form.jednotka.data,
+            pocet=vykaz_form.pocet.data,
+            cena_celkem=vykaz_form.cena_celkem.data,
+            zakazka=zak,
+        )
+        db.session.add(vyk)
+        db.session.commit()
+        return redirect(url_for('zakazka_detail', zakazka_id=zak.id))
+    return render_template('zakazky/detail.html', zakazka=zak, koment_form=koment_form, vykaz_form=vykaz_form)
+
+
+@app.route('/zakazka/<int:zakazka_id>/pdf')
+def zakazka_pdf(zakazka_id):
+    zak = Zakazka.query.get_or_404(zakazka_id)
+    html = render_template('zakazky/detail.html', zakazka=zak, koment_form=KomentarForm(), vykaz_form=VykazForm())
+    pdf = generate_pdf(html)
+    return send_file(pdf, download_name='zakazka.pdf', as_attachment=True)
+
+
+@app.route('/zakazky/kalendar')
+def zakazky_kalendar():
+    zakazky = Zakazka.query.all()
+    return render_template('zakazky/kalendar.html', zakazky=zakazky)
