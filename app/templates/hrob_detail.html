@@ -1,0 +1,14 @@
+{% extends '_base.html' %}
+{% block title %}Hrob {{ hrob.oznaceni }}{% endblock %}
+{% block content %}
+<h1>Hrob {{ hrob.oznaceni }}</h1>
+<p>Typ: {{ hrob.typ }}</p>
+<p>GPS/Sektor: {{ hrob.gps }}</p>
+<h2>Zesnulí</h2>
+<ul>
+{% for z in hrob.zesnuli %}
+<li>{{ z.jmeno }} ({{ z.datum_narozeni }} - {{ z.datum_umrti }})</li>
+{% endfor %}
+</ul>
+<p><img src="{{ url_for('hrob_qr', hrob_id=hrob.id) }}" alt="QR"></p>
+{% endblock %}

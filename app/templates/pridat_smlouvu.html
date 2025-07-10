@@ -1,0 +1,14 @@
+{% extends '_base.html' %}
+{% block title %}Přidat smlouvu{% endblock %}
+{% block content %}
+<h1>Přidat smlouvu</h1>
+<form method="post">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">{{ form.typ_smlouvy.label }} {{ form.typ_smlouvy(class_='form-control') }}</div>
+    <div class="mb-3">{{ form.datum_uzavreni.label }} {{ form.datum_uzavreni(class_='form-control') }}</div>
+    <div class="mb-3">{{ form.doba_trvani.label }} {{ form.doba_trvani(class_='form-control') }}</div>
+    <div class="mb-3">{{ form.hrob_id.label }} {{ form.hrob_id(class_='form-control') }}</div>
+    <div class="mb-3">{{ form.najemce_id.label }} {{ form.najemce_id(class_='form-control') }}</div>
+    {{ form.submit(class_='btn btn-primary') }}
+</form>
+{% endblock %}

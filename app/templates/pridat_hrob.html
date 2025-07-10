@@ -1,0 +1,13 @@
+{% extends '_base.html' %}
+{% block title %}Přidat hrob{% endblock %}
+{% block content %}
+<h1>Přidat hrob</h1>
+<form method="post">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">{{ form.oznaceni.label }} {{ form.oznaceni(class_='form-control') }}</div>
+    <div class="mb-3">{{ form.typ.label }} {{ form.typ(class_='form-control') }}</div>
+    <div class="mb-3">{{ form.gps.label }} {{ form.gps(class_='form-control') }}</div>
+    <div class="mb-3">{{ form.hrbitov_id.label }} {{ form.hrbitov_id(class_='form-control') }}</div>
+    {{ form.submit(class_='btn btn-primary') }}
+</form>
+{% endblock %}

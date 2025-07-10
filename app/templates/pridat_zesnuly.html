@@ -1,0 +1,13 @@
+{% extends '_base.html' %}
+{% block title %}Přidat zesnulého{% endblock %}
+{% block content %}
+<h1>Přidat zesnulého</h1>
+<form method="post">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">{{ form.jmeno.label }} {{ form.jmeno(class_='form-control') }}</div>
+    <div class="mb-3">{{ form.datum_narozeni.label }} {{ form.datum_narozeni(class_='form-control') }}</div>
+    <div class="mb-3">{{ form.datum_umrti.label }} {{ form.datum_umrti(class_='form-control') }}</div>
+    <div class="mb-3">{{ form.hrob_id.label }} {{ form.hrob_id(class_='form-control') }}</div>
+    {{ form.submit(class_='btn btn-primary') }}
+</form>
+{% endblock %}
