@@ -1,0 +1,11 @@
+{% extends '_base.html' %}
+{% block title %}Přidat nájemce{% endblock %}
+{% block content %}
+<h1>Přidat nájemce</h1>
+<form method="post">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">{{ form.jmeno.label }} {{ form.jmeno(class_='form-control') }}</div>
+    <div class="mb-3">{{ form.kontaktni_udaje.label }} {{ form.kontaktni_udaje(class_='form-control') }}</div>
+    {{ form.submit(class_='btn btn-primary') }}
+</form>
+{% endblock %}

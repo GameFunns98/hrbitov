@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="cs">
+<head><meta charset="utf-8"></head>
+<body>
+<h1>Smlouva č. {{ smlouva.id }}</h1>
+<p>Typ: {{ smlouva.typ_smlouvy }}</p>
+<p>Hrob: {{ smlouva.hrob.oznaceni }}</p>
+<p>Nájemce: {{ smlouva.najemce.jmeno }}</p>
+<p>Datum uzavření: {{ smlouva.datum_uzavreni }}</p>
+<p>Doba trvání: {{ smlouva.doba_trvani }} let</p>
+</body>
+</html>

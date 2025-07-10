@@ -1,0 +1,11 @@
+{% extends '_base.html' %}
+{% block title %}Přidat hřbitov{% endblock %}
+{% block content %}
+<h1>Přidat hřbitov</h1>
+<form method="post">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">{{ form.nazev.label }} {{ form.nazev(class_='form-control') }}</div>
+    <div class="mb-3">{{ form.adresa.label }} {{ form.adresa(class_='form-control') }}</div>
+    {{ form.submit(class_='btn btn-primary') }}
+</form>
+{% endblock %}
