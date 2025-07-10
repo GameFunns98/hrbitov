@@ -1,5 +1,5 @@
 import io
-from flask import render_template, redirect, url_for, flash, send_file
+from flask import render_template, redirect, url_for, flash, send_file, request
 from . import app, db
 from .models import (
     Hrbitov,
@@ -26,8 +26,13 @@ from .utils import generate_qr, generate_pdf
 
 @app.route('/')
 def index():
+    return redirect(url_for('hrbitovy_list'))
+
+
+@app.route('/hrbitovy')
+def hrbitovy_list():
     hrbitovy = Hrbitov.query.all()
-    return render_template('index.html', hrbitovy=hrbitovy)
+    return render_template('hrbitovy/index.html', hrbitovy=hrbitovy)
 
 @app.route('/hrbitov/<int:hrbitov_id>')
 def hrbitov_detail(hrbitov_id):
@@ -42,8 +47,29 @@ def pridat_hrbitov():
         db.session.add(hrb)
         db.session.commit()
         flash('Hřbitov přidán')
-        return redirect(url_for('index'))
+        return redirect(url_for('hrbitovy_list'))
     return render_template('pridat_hrbitov.html', form=form)
+
+
+@app.route('/hrbitov/<int:hrbitov_id>/edit', methods=['GET', 'POST'])
+def edit_hrbitov(hrbitov_id):
+    hrb = Hrbitov.query.get_or_404(hrbitov_id)
+    form = HrbitovForm(obj=hrb)
+    if form.validate_on_submit():
+        form.populate_obj(hrb)
+        db.session.commit()
+        flash('Hřbitov upraven')
+        return redirect(url_for('hrbitovy_list'))
+    return render_template('pridat_hrbitov.html', form=form, edit=True)
+
+
+@app.route('/hrbitov/<int:hrbitov_id>/delete', methods=['POST'])
+def delete_hrbitov(hrbitov_id):
+    hrb = Hrbitov.query.get_or_404(hrbitov_id)
+    db.session.delete(hrb)
+    db.session.commit()
+    flash('Hřbitov smazán')
+    return redirect(url_for('hrbitovy_list'))
 
 @app.route('/pridat_hrob', methods=['GET', 'POST'])
 def pridat_hrob():
@@ -56,6 +82,34 @@ def pridat_hrob():
         return redirect(url_for('hrbitov_detail', hrbitov_id=form.hrbitov_id.data))
     return render_template('pridat_hrob.html', form=form)
 
+
+@app.route('/hroby')
+def hroby_list():
+    hroby = Hrob.query.all()
+    return render_template('hroby/index.html', hroby=hroby)
+
+
+@app.route('/hrob/<int:hrob_id>/edit', methods=['GET', 'POST'])
+def edit_hrob(hrob_id):
+    hrob = Hrob.query.get_or_404(hrob_id)
+    form = HrobForm(obj=hrob)
+    if form.validate_on_submit():
+        form.populate_obj(hrob)
+        db.session.commit()
+        flash('Hrob upraven')
+        return redirect(url_for('hroby_list'))
+    return render_template('pridat_hrob.html', form=form, edit=True)
+
+
+@app.route('/hrob/<int:hrob_id>/delete', methods=['POST'])
+def delete_hrob(hrob_id):
+    hrob = Hrob.query.get_or_404(hrob_id)
+    hrb_id = hrob.hrbitov_id
+    db.session.delete(hrob)
+    db.session.commit()
+    flash('Hrob smazán')
+    return redirect(url_for('hroby_list'))
+
 @app.route('/pridat_zesnuly', methods=['GET', 'POST'])
 def pridat_zesnuly():
     form = ZesnulyForm()
@@ -67,6 +121,33 @@ def pridat_zesnuly():
         return redirect(url_for('hrbitov_detail', hrbitov_id=Hrob.query.get(form.hrob_id.data).hrbitov_id))
     return render_template('pridat_zesnuly.html', form=form)
 
+
+@app.route('/zesnuli')
+def zesnuli_list():
+    zesnuli = Zesnuly.query.all()
+    return render_template('zesnuli/index.html', zesnuli=zesnuli)
+
+
+@app.route('/zesnuly/<int:zesnuly_id>/edit', methods=['GET', 'POST'])
+def edit_zesnuly(zesnuly_id):
+    zes = Zesnuly.query.get_or_404(zesnuly_id)
+    form = ZesnulyForm(obj=zes)
+    if form.validate_on_submit():
+        form.populate_obj(zes)
+        db.session.commit()
+        flash('Záznam upraven')
+        return redirect(url_for('zesnuli_list'))
+    return render_template('pridat_zesnuly.html', form=form, edit=True)
+
+
+@app.route('/zesnuly/<int:zesnuly_id>/delete', methods=['POST'])
+def delete_zesnuly(zesnuly_id):
+    zes = Zesnuly.query.get_or_404(zesnuly_id)
+    db.session.delete(zes)
+    db.session.commit()
+    flash('Záznam smazán')
+    return redirect(url_for('zesnuli_list'))
+
 @app.route('/pridat_najemce', methods=['GET', 'POST'])
 def pridat_najemce():
     form = NajemceForm()
@@ -75,8 +156,35 @@ def pridat_najemce():
         db.session.add(n)
         db.session.commit()
         flash('Nájemce přidán')
-        return redirect(url_for('index'))
+        return redirect(url_for('najemci_list'))
     return render_template('pridat_najemce.html', form=form)
+
+
+@app.route('/najemci')
+def najemci_list():
+    najemci = Najemce.query.all()
+    return render_template('najemci/index.html', najemci=najemci)
+
+
+@app.route('/najemce/<int:najemce_id>/edit', methods=['GET', 'POST'])
+def edit_najemce(najemce_id):
+    naj = Najemce.query.get_or_404(najemce_id)
+    form = NajemceForm(obj=naj)
+    if form.validate_on_submit():
+        form.populate_obj(naj)
+        db.session.commit()
+        flash('Nájemce upraven')
+        return redirect(url_for('najemci_list'))
+    return render_template('pridat_najemce.html', form=form, edit=True)
+
+
+@app.route('/najemce/<int:najemce_id>/delete', methods=['POST'])
+def delete_najemce(najemce_id):
+    naj = Najemce.query.get_or_404(najemce_id)
+    db.session.delete(naj)
+    db.session.commit()
+    flash('Nájemce smazán')
+    return redirect(url_for('najemci_list'))
 
 @app.route('/pridat_smlouvu', methods=['GET', 'POST'])
 def pridat_smlouvu():
@@ -92,13 +200,35 @@ def pridat_smlouvu():
         db.session.add(s)
         db.session.commit()
         flash('Smlouva přidána')
-        return redirect(url_for('smlouvy'))
+        return redirect(url_for('smlouvy_list'))
     return render_template('pridat_smlouvu.html', form=form)
 
+
 @app.route('/smlouvy')
-def smlouvy():
+def smlouvy_list():
     smlouvy = Smlouva.query.all()
-    return render_template('smlouvy.html', smlouvy=smlouvy)
+    return render_template('smlouvy/index.html', smlouvy=smlouvy)
+
+
+@app.route('/smlouva/<int:smlouva_id>/edit', methods=['GET', 'POST'])
+def edit_smlouva(smlouva_id):
+    sml = Smlouva.query.get_or_404(smlouva_id)
+    form = SmlouvaForm(obj=sml)
+    if form.validate_on_submit():
+        form.populate_obj(sml)
+        db.session.commit()
+        flash('Smlouva upravena')
+        return redirect(url_for('smlouvy_list'))
+    return render_template('pridat_smlouvu.html', form=form, edit=True)
+
+
+@app.route('/smlouva/<int:smlouva_id>/delete', methods=['POST'])
+def delete_smlouva(smlouva_id):
+    sml = Smlouva.query.get_or_404(smlouva_id)
+    db.session.delete(sml)
+    db.session.commit()
+    flash('Smlouva smazána')
+    return redirect(url_for('smlouvy_list'))
 
 @app.route('/smlouva/<int:smlouva_id>/pdf')
 def smlouva_pdf(smlouva_id):
