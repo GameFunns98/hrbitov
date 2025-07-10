@@ -1,0 +1,15 @@
+{% extends '_base.html' %}
+{% block title %}Nová zakázka{% endblock %}
+{% block content %}
+<h1>Vytvořit novou zakázku</h1>
+<form method="post">
+  {{ form.hidden_tag() }}
+  <div class="mb-3">{{ form.typ_zakazky.label }} {{ form.typ_zakazky(class_='form-control') }}</div>
+  <div class="mb-3">{{ form.popis.label }} {{ form.popis(class_='form-control') }}</div>
+  <div class="mb-3">{{ form.datum_zadani.label }} {{ form.datum_zadani(class_='form-control') }}</div>
+  <div class="mb-3">{{ form.datum_dokonceni.label }} {{ form.datum_dokonceni(class_='form-control') }}</div>
+  <div class="mb-3">{{ form.smlouvy.label }} {{ form.smlouvy(class_='form-select', multiple=True) }}</div>
+  <div class="mb-3">{{ form.hroby.label }} {{ form.hroby(class_='form-select', multiple=True) }}</div>
+  {{ form.submit(class_='btn btn-primary') }}
+</form>
+{% endblock %}

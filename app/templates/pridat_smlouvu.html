@@ -1,7 +1,7 @@
 {% extends '_base.html' %}
-{% block title %}Přidat smlouvu{% endblock %}
+{% block title %}{% if edit %}Upravit smlouvu{% else %}Přidat smlouvu{% endif %}{% endblock %}
 {% block content %}
-<h1>Přidat smlouvu</h1>
+<h1>{% if edit %}Upravit smlouvu{% else %}Přidat smlouvu{% endif %}</h1>
 <form method="post">
     {{ form.hidden_tag() }}
     <div class="mb-3">{{ form.typ_smlouvy.label }} {{ form.typ_smlouvy(class_='form-control') }}</div>

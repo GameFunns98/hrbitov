@@ -1,0 +1,23 @@
+{% extends '_base.html' %}
+{% block title %}Seznam hřbitovů{% endblock %}
+{% block content %}
+<h1>Hřbitovy</h1>
+<a href="{{ url_for('pridat_hrbitov') }}" class="btn btn-success mb-3">Přidat hřbitov</a>
+<table class="table table-striped">
+  <tr><th>ID</th><th>Název</th><th>Adresa</th><th>Akce</th></tr>
+  {% for hrb in hrbitovy %}
+  <tr>
+    <td>{{ hrb.id }}</td>
+    <td>{{ hrb.nazev }}</td>
+    <td>{{ hrb.adresa }}</td>
+    <td>
+      <a class="btn btn-sm btn-primary" href="{{ url_for('hrbitov_detail', hrbitov_id=hrb.id) }}">Detail</a>
+      <a class="btn btn-sm btn-secondary" href="{{ url_for('edit_hrbitov', hrbitov_id=hrb.id) }}">Upravit</a>
+      <form method="post" action="{{ url_for('delete_hrbitov', hrbitov_id=hrb.id) }}" class="d-inline">
+        <button class="btn btn-sm btn-danger" onclick="return confirm('Opravdu smazat?')">Smazat</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

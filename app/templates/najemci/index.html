@@ -1,0 +1,22 @@
+{% extends '_base.html' %}
+{% block title %}Seznam nájemců{% endblock %}
+{% block content %}
+<h1>Nájemci</h1>
+<a href="{{ url_for('pridat_najemce') }}" class="btn btn-success mb-3">Přidat nájemce</a>
+<table class="table table-striped">
+  <tr><th>ID</th><th>Jméno</th><th>Kontakt</th><th>Akce</th></tr>
+  {% for n in najemci %}
+  <tr>
+    <td>{{ n.id }}</td>
+    <td>{{ n.jmeno }}</td>
+    <td>{{ n.kontaktni_udaje }}</td>
+    <td>
+      <a class="btn btn-sm btn-secondary" href="{{ url_for('edit_najemce', najemce_id=n.id) }}">Upravit</a>
+      <form method="post" action="{{ url_for('delete_najemce', najemce_id=n.id) }}" class="d-inline">
+        <button class="btn btn-sm btn-danger" onclick="return confirm('Smazat záznam?')">Smazat</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
