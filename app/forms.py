@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, DateField, SubmitField
+from wtforms import StringField, IntegerField, DateField, SubmitField, SelectMultipleField, TextAreaField, FloatField
 from wtforms.validators import DataRequired
 
 class HrbitovForm(FlaskForm):
@@ -32,4 +32,28 @@ class SmlouvaForm(FlaskForm):
     doba_trvani = IntegerField('Doba trvání (roky)')
     hrob_id = IntegerField('ID hrobu', validators=[DataRequired()])
     najemce_id = IntegerField('ID nájemce', validators=[DataRequired()])
+    submit = SubmitField('Uložit')
+
+
+class ZakazkaForm(FlaskForm):
+    typ_zakazky = StringField('Typ zakázky', validators=[DataRequired()])
+    popis = TextAreaField('Popis')
+    datum_zadani = DateField('Datum zadání')
+    datum_dokonceni = DateField('Datum dokončení')
+    smlouvy = SelectMultipleField('Smlouvy', coerce=int)
+    hroby = SelectMultipleField('Hroby', coerce=int)
+    submit = SubmitField('Uložit')
+
+
+class KomentarForm(FlaskForm):
+    text = TextAreaField('Komentář', validators=[DataRequired()])
+    submit = SubmitField('Přidat')
+
+
+class VykazForm(FlaskForm):
+    polozka = StringField('Položka', validators=[DataRequired()])
+    naklady = FloatField('Náklady')
+    jednotka = StringField('Jednotka')
+    pocet = FloatField('Počet')
+    cena_celkem = FloatField('Cena celkem')
     submit = SubmitField('Uložit')

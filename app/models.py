@@ -45,6 +45,66 @@ class Smlouva(db.Model):
         return None
 
 
+# Asociacni tabulky mnoha na mnoho pro zakazky
+zakazka_smlouva = db.Table(
+    'zakazka_smlouva',
+    db.Column('zakazka_id', db.Integer, db.ForeignKey('zakazka.id')),
+    db.Column('smlouva_id', db.Integer, db.ForeignKey('smlouva.id')),
+)
+
+zakazka_hrob = db.Table(
+    'zakazka_hrob',
+    db.Column('zakazka_id', db.Integer, db.ForeignKey('zakazka.id')),
+    db.Column('hrob_id', db.Integer, db.ForeignKey('hrob.id')),
+)
+
+
+class Zakazka(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    cislo_zakazky = db.Column(db.String(20), unique=True, nullable=False)
+    typ_zakazky = db.Column(db.String(120))
+    popis = db.Column(db.Text)
+    datum_zadani = db.Column(db.Date)
+    datum_dokonceni = db.Column(db.Date)
+    stav = db.Column(db.String(20), default='otevřená')
+    smlouvy = db.relationship('Smlouva', secondary=zakazka_smlouva,
+                              backref=db.backref('zakazky', lazy='dynamic'))
+    hroby = db.relationship('Hrob', secondary=zakazka_hrob,
+                            backref=db.backref('zakazky', lazy='dynamic'))
+    komentare = db.relationship('Komentar', backref='zakazka', lazy=True)
+    vykazy = db.relationship('VykazZakazky', backref='zakazka', lazy=True)
+
+
+class Komentar(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.Text, nullable=False)
+    datum = db.Column(db.Date, default=date.today)
+    zakazka_id = db.Column(db.Integer, db.ForeignKey('zakazka.id'), nullable=False)
+
+
+class VykazZakazky(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    polozka = db.Column(db.String(120))
+    naklady = db.Column(db.Float)
+    jednotka = db.Column(db.String(50))
+    pocet = db.Column(db.Float)
+    cena_celkem = db.Column(db.Float)
+    zakazka_id = db.Column(db.Integer, db.ForeignKey('zakazka.id'), nullable=False)
+
+
+def generate_cislo_zakazky(year=None):
+    year = year or date.today().year
+    last = (
+        Zakazka.query.filter(Zakazka.cislo_zakazky.like(f"{year}-%"))
+        .order_by(Zakazka.cislo_zakazky.desc())
+        .first()
+    )
+    if last:
+        seq = int(last.cislo_zakazky.split('-')[1])
+    else:
+        seq = 0
+    return f"{year}-{seq+1:06d}"
+
 def create_test_data():
     if Hrbitov.query.first():
         return
@@ -58,4 +118,18 @@ def create_test_data():
     db.session.add(najemce)
     smlouva = Smlouva(typ_smlouvy='nájemní', datum_uzavreni=date.today(), doba_trvani=10, hrob=hrob, najemce=najemce)
     db.session.add(smlouva)
+    db.session.commit()
+
+    zak = Zakazka(
+        cislo_zakazky='2025-000003',
+        typ_zakazky='Práce na hřbitově',
+        datum_zadani=date(2025, 7, 10),
+        stav='otevřená'
+    )
+    zak.smlouvy.append(smlouva)
+    zak.hroby.append(hrob)
+    db.session.add(zak)
+    db.session.commit()
+    kom = Komentar(text='Ukázkový komentář', zakazka=zak)
+    db.session.add(kom)
     db.session.commit()
