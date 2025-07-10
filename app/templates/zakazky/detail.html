@@ -8,6 +8,12 @@
    {% if zakazka.datum_dokonceni %}<br><strong>Dokončení:</strong> {{ zakazka.datum_dokonceni }}{% endif %}
 </p>
 <p><strong>Stav:</strong> {{ zakazka.stav }}</p>
+<p><strong>Celkové náklady:</strong> {{ '%.2f'|format(celkova_cena) }} Kč</p>
+{% if zakazka.stav != 'uzavřená' %}
+<form method="post" action="{{ url_for('uzavrit_zakazku', zakazka_id=zakazka.id) }}" class="mb-3">
+  <button class="btn btn-warning" onclick="return confirm('Uzavřít zakázku?')">Uzavřít zakázku</button>
+</form>
+{% endif %}
 <h3>Smlouvy</h3>
 <ul>
   {% for s in zakazka.smlouvy %}<li>{{ s.id }}</li>{% else %}<li>Žádné</li>{% endfor %}
