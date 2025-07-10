@@ -304,6 +304,7 @@ def zakazka_detail(zakazka_id):
         .scalar()
         or 0
     )
+
     if koment_form.validate_on_submit() and koment_form.submit.data:
         kom = Komentar(text=koment_form.text.data, zakazka=zak)
         db.session.add(kom)
@@ -339,6 +340,7 @@ def uzavrit_zakazku(zakazka_id):
     db.session.commit()
     flash('Zakázka uzavřena')
     return redirect(url_for('zakazka_detail', zakazka_id=zak.id))
+
 
 
 @app.route('/zakazka/<int:zakazka_id>/pdf')
