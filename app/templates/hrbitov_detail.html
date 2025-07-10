@@ -1,0 +1,18 @@
+{% extends '_base.html' %}
+{% block title %}{{ hrbitov.nazev }}{% endblock %}
+{% block content %}
+<h1>{{ hrbitov.nazev }}</h1>
+<p>{{ hrbitov.adresa }}</p>
+<h2>Hroby</h2>
+<table class="table">
+  <tr><th>ID</th><th>Označení</th><th>Typ</th><th>Detail</th></tr>
+  {% for hrob in hrbitov.hroby %}
+  <tr>
+    <td>{{ hrob.id }}</td>
+    <td>{{ hrob.oznaceni }}</td>
+    <td>{{ hrob.typ }}</td>
+    <td><a href="{{ url_for('hrob_detail', hrob_id=hrob.id) }}">Detail</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
