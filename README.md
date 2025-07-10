@@ -1,9 +1,8 @@
-<<<<<<< HEAD
-# hrbitov
-=======
+
 # Správa hřbitovů
 
 Tato aplikace umožňuje evidenci hřbitovů, hrobů, zesnulých, nájemců, smluv a nově také pracovních zakázek. Je psaná ve Flasku a používá SQLite databázi uloženou v adresáři `instance`.
+V navigaci najdete odkazy na přehledy i přidávání jednotlivých entit a možnost jejich úprav či mazání.
 
 ## Spuštění
 
@@ -19,4 +18,3 @@ Při prvním spuštění se automaticky vytvoří databáze i testovací data.
 - balíčky uvedené v `requirements.txt`
 
 Aplikace nevyžaduje přihlášení a je vhodná pro malé obce.
->>>>>>> d1f81560e9f723fa7ae67b8c1a8daaa273251600
