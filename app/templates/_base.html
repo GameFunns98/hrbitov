@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>{% block title %}Správa hřbitova{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -11,12 +12,37 @@
     <a class="navbar-brand" href="{{ url_for('index') }}">Hřbitov</a>
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('pridat_hrbitov') }}">Přidat hřbitov</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('pridat_hrob') }}">Přidat hrob</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('pridat_zesnuly') }}">Přidat zesnulého</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('pridat_najemce') }}">Přidat nájemce</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('pridat_smlouvu') }}">Přidat smlouvu</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('smlouvy') }}">Smlouvy</a></li>
+        <li class="nav-item me-3">
+          <a class="nav-link d-inline p-0" href="{{ url_for('hrbitovy_list') }}">Přehled hřbitovů</a>
+          <span class="text-muted mx-1">|</span>
+          <a class="nav-link d-inline p-0 text-success" href="{{ url_for('pridat_hrbitov') }}">Přidat hřbitov</a>
+        </li>
+        <li class="nav-item me-3">
+          <a class="nav-link d-inline p-0" href="{{ url_for('hroby_list') }}">Přehled hrobů</a>
+          <span class="text-muted mx-1">|</span>
+          <a class="nav-link d-inline p-0 text-success" href="{{ url_for('pridat_hrob') }}">Přidat hrob</a>
+        </li>
+        <li class="nav-item me-3">
+          <a class="nav-link d-inline p-0" href="{{ url_for('zesnuli_list') }}">Přehled zesnulých</a>
+          <span class="text-muted mx-1">|</span>
+          <a class="nav-link d-inline p-0 text-success" href="{{ url_for('pridat_zesnuly') }}">Přidat zesnulého</a>
+        </li>
+        <li class="nav-item me-3">
+          <a class="nav-link d-inline p-0" href="{{ url_for('najemci_list') }}">Přehled nájemců</a>
+          <span class="text-muted mx-1">|</span>
+          <a class="nav-link d-inline p-0 text-success" href="{{ url_for('pridat_najemce') }}">Přidat nájemce</a>
+        </li>
+        <li class="nav-item me-3">
+          <a class="nav-link d-inline p-0" href="{{ url_for('smlouvy_list') }}">Přehled smluv</a>
+          <span class="text-muted mx-1">|</span>
+          <a class="nav-link d-inline p-0 text-success" href="{{ url_for('pridat_smlouvu') }}">Přidat smlouvu</a>
+        </li>
+        <li class="nav-item me-3">
+          <a class="nav-link d-inline p-0" href="{{ url_for('zakazky') }}">Zakázky</a>
+          <span class="text-muted mx-1">|</span>
+          <a class="nav-link d-inline p-0 text-success" href="{{ url_for('nova_zakazka') }}">Nová zakázka</a>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('zakazky_kalendar') }}">Kalendář akcí</a></li>
       </ul>
     </div>
   </div>

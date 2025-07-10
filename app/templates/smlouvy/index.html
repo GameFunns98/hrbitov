@@ -1,0 +1,25 @@
+{% extends '_base.html' %}
+{% block title %}Smlouvy{% endblock %}
+{% block content %}
+<h1>Smlouvy</h1>
+<a href="{{ url_for('pridat_smlouvu') }}" class="btn btn-success mb-3">Přidat smlouvu</a>
+<table class="table table-striped">
+  <tr><th>ID</th><th>Hrob</th><th>Nájemce</th><th>Typ</th><th>Expirace</th><th>Akce</th></tr>
+  {% for s in smlouvy %}
+  <tr>
+    <td>{{ s.id }}</td>
+    <td>{{ s.hrob.oznaceni }}</td>
+    <td>{{ s.najemce.jmeno }}</td>
+    <td>{{ s.typ_smlouvy }}</td>
+    <td>{{ s.datum_expirace }}</td>
+    <td>
+      <a class="btn btn-sm btn-secondary" href="{{ url_for('edit_smlouva', smlouva_id=s.id) }}">Upravit</a>
+      <a class="btn btn-sm btn-primary" href="{{ url_for('smlouva_pdf', smlouva_id=s.id) }}">PDF</a>
+      <form method="post" action="{{ url_for('delete_smlouva', smlouva_id=s.id) }}" class="d-inline">
+        <button class="btn btn-sm btn-danger" onclick="return confirm('Smazat smlouvu?')">Smazat</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

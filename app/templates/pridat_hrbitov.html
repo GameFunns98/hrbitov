@@ -1,7 +1,7 @@
 {% extends '_base.html' %}
-{% block title %}Přidat hřbitov{% endblock %}
+{% block title %}{% if edit %}Upravit hřbitov{% else %}Přidat hřbitov{% endif %}{% endblock %}
 {% block content %}
-<h1>Přidat hřbitov</h1>
+<h1>{% if edit %}Upravit hřbitov{% else %}Přidat hřbitov{% endif %}</h1>
 <form method="post">
     {{ form.hidden_tag() }}
     <div class="mb-3">{{ form.nazev.label }} {{ form.nazev(class_='form-control') }}</div>

@@ -1,0 +1,15 @@
+{% extends '_base.html' %}
+{% block title %}Kalendář zakázek{% endblock %}
+{% block content %}
+<h1><i class="fa fa-calendar"></i> Kalendář akcí</h1>
+<table class="table table-bordered">
+  <tr><th>Číslo</th><th>Datum</th><th>Typ</th></tr>
+  {% for z in zakazky %}
+  <tr>
+    <td>{{ z.cislo_zakazky }}</td>
+    <td>{{ z.datum_zadani }}</td>
+    <td>{{ z.typ_zakazky }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
