@@ -23,6 +23,7 @@ from .forms import (
     VykazForm,
 )
 from .utils import generate_qr, generate_pdf
+from datetime import date
 
 @app.route('/')
 def index():
@@ -297,6 +298,13 @@ def zakazka_detail(zakazka_id):
     zak = Zakazka.query.get_or_404(zakazka_id)
     koment_form = KomentarForm(prefix='kom')
     vykaz_form = VykazForm(prefix='vyk')
+    celkova_cena = (
+        db.session.query(db.func.sum(VykazZakazky.cena_celkem))
+        .filter_by(zakazka_id=zak.id)
+        .scalar()
+        or 0
+    )
+
     if koment_form.validate_on_submit() and koment_form.submit.data:
         kom = Komentar(text=koment_form.text.data, zakazka=zak)
         db.session.add(kom)
@@ -314,7 +322,25 @@ def zakazka_detail(zakazka_id):
         db.session.add(vyk)
         db.session.commit()
         return redirect(url_for('zakazka_detail', zakazka_id=zak.id))
-    return render_template('zakazky/detail.html', zakazka=zak, koment_form=koment_form, vykaz_form=vykaz_form)
+    return render_template(
+        'zakazky/detail.html',
+        zakazka=zak,
+        koment_form=koment_form,
+        vykaz_form=vykaz_form,
+        celkova_cena=celkova_cena,
+    )
+
+
+@app.route('/zakazka/<int:zakazka_id>/uzavrit', methods=['POST'])
+def uzavrit_zakazku(zakazka_id):
+    zak = Zakazka.query.get_or_404(zakazka_id)
+    zak.stav = 'uzavřená'
+    if not zak.datum_dokonceni:
+        zak.datum_dokonceni = date.today()
+    db.session.commit()
+    flash('Zakázka uzavřena')
+    return redirect(url_for('zakazka_detail', zakazka_id=zak.id))
+
 
 
 @app.route('/zakazka/<int:zakazka_id>/pdf')

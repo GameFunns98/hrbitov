@@ -5,15 +5,24 @@
 <a class="btn btn-primary mb-3" href="{{ url_for('nova_zakazka') }}">Nová zakázka</a>
 <table class="table table-striped">
   <tr>
-    <th>Číslo</th><th>Typ</th><th>Datum zadání</th><th>Stav</th><th>Detail</th>
+    <th>Číslo</th><th>Typ</th><th>Datum zadání</th><th>Stav</th><th>Akce</th>
   </tr>
   {% for z in zakazky %}
-  <tr>
+  <tr class="{% if z.stav == 'uzavřená' %}table-light{% endif %}">
     <td>{{ z.cislo_zakazky }}</td>
     <td>{{ z.typ_zakazky }}</td>
     <td>{{ z.datum_zadani }}</td>
-    <td>{{ z.stav }}</td>
-    <td><a href="{{ url_for('zakazka_detail', zakazka_id=z.id) }}">Otevřít</a></td>
+    <td>
+      <span class="badge {% if z.stav == 'uzavřená' %}bg-secondary{% else %}bg-success{% endif %}">{{ z.stav }}</span>
+    </td>
+    <td>
+      <a class="btn btn-sm btn-primary" href="{{ url_for('zakazka_detail', zakazka_id=z.id) }}">Detail</a>
+      {% if z.stav != 'uzavřená' %}
+      <form method="post" action="{{ url_for('uzavrit_zakazku', zakazka_id=z.id) }}" class="d-inline">
+        <button class="btn btn-sm btn-warning">Uzavřít</button>
+      </form>
+      {% endif %}
+    </td>
   </tr>
   {% endfor %}
 </table>
